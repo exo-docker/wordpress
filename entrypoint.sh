@@ -11,7 +11,7 @@ THEME_DIRECTORY=${WP_CONTENT_DIRECTORY}/themes
 THEME_LIST=${SRC_DIRECTORY}/themes.lst
 
 set +u
-DEPLOY_MODE=${DEPLOY_MODE:"dev"}
+DEPLOY_MODE=${DEPLOY_MODE:dev}
 set -u
 
 function installRemotePlugins() {
