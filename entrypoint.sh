@@ -99,9 +99,10 @@ function installThemesFromSources() {
     cd $THEME_DIRECTORY
     for theme in $(find . -maxdepth 1 -type d | grep -v "^\.$") 
     do
-      echo Installing theme ${plugin} from sources
+      echo Installing theme ${theme} from sources
+      DEST="/var/www/html/wp-content/themes/${theme}"
       if [ -h "${DEST}" ]; then
-        echo "WARNING : plugin theme for ${plugin} already exists, ignoring"
+        echo "WARNING : plugin theme for ${theme} already exists, ignoring"
       else
         ln -s /src/themes/${theme} /var/www/html/wp-content/themes
       fi
