@@ -10,6 +10,10 @@ PLUGIN_LIST=${SRC_DIRECTORY}/plugins.lst
 THEME_DIRECTORY=${WP_CONTENT_DIRECTORY}/themes
 THEME_LIST=${SRC_DIRECTORY}/themes.lst
 
+set +u
+DEPLOY_MODE=${DEPLOY_MODE:"dev"}
+set -u
+
 function installRemotePlugins() {
   if [ -e "${PLUGIN_LIST}" ]; then
     echo Install plugins from repositories...
@@ -85,7 +89,11 @@ function installPluginsFromSources() {
       if [ -h "${DEST}" ]; then
         echo "WARNING : plugin directory for ${plugin} already exists, ignoring"
       else
-        ln -s /src/plugins/${plugin} /var/www/html/wp-content/plugins
+        if [ "${DEPLOY_MODE}" == "dev" ]; then
+          ln -s ${PLUGIN_DIRECTORY}/${plugin} /var/www/html/wp-content/plugins
+        else
+          sudo -u www-data cp -rf ${PLUGIN_DIRECTORY}/${plugin} /var/www/html/wp-content/plugins
+        fi
       fi
     done
   fi
@@ -104,7 +112,11 @@ function installThemesFromSources() {
       if [ -h "${DEST}" ]; then
         echo "WARNING : plugin theme for ${theme} already exists, ignoring"
       else
-        ln -s /src/themes/${theme} /var/www/html/wp-content/themes
+        if [ "${DEPLOY_MODE}" == "dev" ]; then
+            ln -s ${THEME_DIRECTORY}/${theme} /var/www/html/wp-content/themes
+        else
+          sudo -u www-data cp -rf ${THEME_DIRECTORY}/${theme} /var/www/html/wp-content/themes
+        fi
       fi
     done
   fi
