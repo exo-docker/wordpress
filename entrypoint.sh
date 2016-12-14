@@ -187,5 +187,8 @@ installRemotePlugins
 installThemesFromSources
 installRemoteThemes
 
+echo Wordpress installed
+echo Starting php-fpm
+
 # Call the default wordpress entrypoint
 php-fpm
