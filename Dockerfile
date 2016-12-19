@@ -1,6 +1,6 @@
 # Use apache for the moment. migrate to fpm later
 #FROM wordpress:4.6.1-php7.0-apache
-FROM php:7-fpm
+FROM php:7.0.14-fpm
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
