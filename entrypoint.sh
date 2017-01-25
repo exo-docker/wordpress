@@ -23,11 +23,15 @@ function installRemotePlugins() {
       local name=$(echo $plugin | cut -f1 -d":")
       local version=$(echo $plugin | cut -f2- -d":")
 
+      echo
+      echo -n Deploying plugin 
       case $version in
         http*)
+          echo " ${name} from ${version}"
           $WP_CMD plugin install ${version}
         ;;
         *)
+          echo " ${name}:${version}"
           local params=""
           if [ ! -z "$version" ]; then
             params="${params} --version=${version}"
@@ -43,7 +47,6 @@ function installRemotePlugins() {
   else
     echo Plugin list not found, Skipping remote plugin installation. 
   fi
-
 }
 
 function installRemoteThemes() {
@@ -55,8 +58,11 @@ function installRemoteThemes() {
       local name=$(echo $theme | cut -f1 -d":")
       local version=$(echo $theme | cut -f2- -d":")
 
+      echo
+      echo -n "Deployinh theme "
       case $version in
         http*)
+          echo "${name} from ${version}"
           $WP_CMD theme install ${version}
         ;;
         *)
@@ -64,7 +70,7 @@ function installRemoteThemes() {
           if [ ! -z "$version" ]; then
             params="${params} --version=${version}"
           fi
-
+          echo "${name}:${version}"
           $WP_CMD theme install ${name} ${params}
         ;;
       esac
