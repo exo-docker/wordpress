@@ -24,7 +24,7 @@ function installRemotePlugins() {
       local version=$(echo $plugin | cut -f2- -d":")
 
       echo
-      echo -n Deploying plugin 
+      echo -n Deploying plugin
       case $version in
         http*)
           echo " ${name} from ${version}"
@@ -45,7 +45,7 @@ function installRemotePlugins() {
 
     done
   else
-    echo Plugin list not found, Skipping remote plugin installation. 
+    echo Plugin list not found, Skipping remote plugin installation.
   fi
 }
 
@@ -59,7 +59,7 @@ function installRemoteThemes() {
       local version=$(echo $theme | cut -f2- -d":")
 
       echo
-      echo -n "Deployinh theme "
+      echo -n "Deploying theme "
       case $version in
         http*)
           echo "${name} from ${version}"
@@ -77,7 +77,7 @@ function installRemoteThemes() {
 
     done
   else
-    echo Theme list not found, Skipping remote theme installation. 
+    echo Theme list not found, Skipping remote theme installation.
   fi
 }
 
@@ -88,7 +88,7 @@ function installPluginsFromSources() {
   else
     echo Installing plugins from sources....
     cd ${PLUGIN_DIRECTORY}
-    for plugin in $(find . -maxdepth 1 -type d | grep -v "^\.$") 
+    for plugin in $(find . -maxdepth 1 -type d | grep -v "^\.$")
     do
       echo Installing plugin ${plugin} from sources
       DEST="/var/www/html/wp-content/plugins/${plugin}"
@@ -108,10 +108,10 @@ function installPluginsFromSources() {
 function installThemesFromSources() {
   if [ ! -d $THEME_DIRECTORY ]; then
     echo Theme directory ${THEME_DIRECTORY} not found, skipping themes installation from sources.
-  else 
+  else
     echo Install themes from sources....
     cd $THEME_DIRECTORY
-    for theme in $(find . -maxdepth 1 -type d | grep -v "^\.$") 
+    for theme in $(find . -maxdepth 1 -type d | grep -v "^\.$")
     do
       echo Installing theme ${theme} from sources
       DEST="/var/www/html/wp-content/themes/${theme}"
@@ -135,7 +135,7 @@ function waitForDatabase() {
 
   echo Waiting for database availability
 
-  while [ ${count} -lt ${max_try} -a ${ret} != 0 ]
+  while [ ${count} -lt ${max_try} ] && [ ${ret} != 0 ]
   do
     set +e
     mysql -h db -u ${WORDPRESS_DB_USER} -p${WORDPRESS_DB_PASSWORD} -e 'select version()' &> /dev/null
@@ -177,23 +177,26 @@ if [ ${RET} -ne 0 ]; then
   echo Initializing ....
   ${WP_CMD} core config --dbname=${WORDPRESS_DB_NAME} --dbuser=${WORDPRESS_DB_USER} --dbpass=${WORDPRESS_DB_PASSWORD} --dbhost=db
   ${WP_CMD} core install --url=${WORDPRESS_DOMAIN_NAME} --title="Change my title!!" --admin_user=${WORDPRESS_ADMIN_USER} --admin_password=${WORDPRESS_ADMIN_PASSWORD} --admin_email=admin@test.com --skip-email
+
+  ${WP_CMD} core update-db
+  setOption siteurl "${WORDPRESS_PUBLIC_URL}"
+  setOption home "${WORDPRESS_PUBLIC_URL}"
+  echo Update admin password
+  set +e
+  ## email is failing
+  $WP_CMD user update ${WORDPRESS_ADMIN_USER} --user_pass=${WORDPRESS_ADMIN_PASSWORD} 2>/dev/null
+  set -e
+
+  installPluginsFromSources
+  installRemotePlugins
+  installThemesFromSources
+  installRemoteThemes
+
+  echo Wordpress installed
+else
+  echo Wordpress already installed.
 fi
 
-${WP_CMD} core update-db
-setOption siteurl "${WORDPRESS_PUBLIC_URL}"
-setOption home "${WORDPRESS_PUBLIC_URL}"
-echo Update admin password
-set +e
-## email is failing
-$WP_CMD user update ${WORDPRESS_ADMIN_USER} --user_pass=${WORDPRESS_ADMIN_PASSWORD} 2>/dev/null
-set -e
-
-installPluginsFromSources
-installRemotePlugins
-installThemesFromSources
-installRemoteThemes
-
-echo Wordpress installed
 echo Starting php-fpm
 
 # Call the default wordpress entrypoint
