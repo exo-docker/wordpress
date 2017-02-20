@@ -28,7 +28,7 @@ function installRemotePlugins() {
       case $version in
         http*)
           echo " ${name} from ${version}"
-          $WP_CMD plugin install ${version}
+          $WP_CMD plugin install --force ${version}
         ;;
         *)
           echo " ${name}:${version}"
@@ -37,7 +37,7 @@ function installRemotePlugins() {
             params="${params} --version=${version}"
           fi
 
-          $WP_CMD plugin install ${name} ${params}
+          $WP_CMD plugin install --force ${name} ${params}
         ;;
       esac
 
@@ -63,7 +63,7 @@ function installRemoteThemes() {
       case $version in
         http*)
           echo "${name} from ${version}"
-          $WP_CMD theme install ${version}
+          $WP_CMD theme install --force ${version}
         ;;
         *)
           local params=""
@@ -71,7 +71,7 @@ function installRemoteThemes() {
             params="${params} --version=${version}"
           fi
           echo "${name}:${version}"
-          $WP_CMD theme install ${name} ${params}
+          $WP_CMD theme install --force ${name} ${params}
         ;;
       esac
 
