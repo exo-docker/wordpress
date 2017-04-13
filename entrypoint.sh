@@ -1,9 +1,15 @@
 #!/bin/bash -eu
 
-WP_CMD="sudo -u www-data wp --path=/var/www/html"
+echo #####################
+echo "Using : $(pwd) as wordpress base directory"
+echo #####################
+
+WP_BASE=$(pwd)
+WP_CMD="sudo -u www-data wp --path=${WP_BASE}"
 
 SRC_DIRECTORY=/src
 WP_CONTENT_DIRECTORY=${SRC_DIRECTORY}/wp-content
+STATIC_DIRECTORY=/static
 
 PLUGIN_DIRECTORY=${WP_CONTENT_DIRECTORY}/plugins
 PLUGIN_LIST=${SRC_DIRECTORY}/plugins.lst
@@ -20,8 +26,9 @@ function installRemotePlugins() {
 
     for plugin in $(cat "${PLUGIN_LIST}" | grep -v "^#")
     do
-      local name=$(echo $plugin | cut -f1 -d":")
-      local version=$(echo $plugin | cut -f2- -d":")
+      local name version
+      name=$(echo $plugin | cut -f1 -d":")
+      version=$(echo $plugin | cut -f2- -d":")
 
       echo
       echo -n Deploying plugin
@@ -55,8 +62,9 @@ function installRemoteThemes() {
 
     for theme in $(cat "${THEME_LIST}" | grep -v "^#")
     do
-      local name=$(echo $theme | cut -f1 -d":")
-      local version=$(echo $theme | cut -f2- -d":")
+      local name version
+      name=$(echo $theme | cut -f1 -d":")
+      version=$(echo $theme | cut -f2- -d":")
 
       echo
       echo -n "Deploying theme "
@@ -91,14 +99,14 @@ function installPluginsFromSources() {
     for plugin in $(find . -maxdepth 1 -type d | grep -v "^\.$")
     do
       echo Installing plugin ${plugin} from sources
-      DEST="/var/www/html/wp-content/plugins/${plugin}"
+      DEST="${WP_BASE}/wp-content/plugins/${plugin}"
       if [ -h "${DEST}" ]; then
         echo "WARNING : plugin directory for ${plugin} already exists, ignoring"
       else
         if [ "${DEPLOY_MODE}" == "dev" ]; then
-          ln -s ${PLUGIN_DIRECTORY}/${plugin} /var/www/html/wp-content/plugins
+          ln -s ${PLUGIN_DIRECTORY}/${plugin} ${WP_BASE}/wp-content/plugins
         else
-          sudo -u www-data cp -rf ${PLUGIN_DIRECTORY}/${plugin} /var/www/html/wp-content/plugins
+          sudo -u www-data cp -rf ${PLUGIN_DIRECTORY}/${plugin} ${WP_BASE}/wp-content/plugins
         fi
       fi
     done
@@ -114,14 +122,14 @@ function installThemesFromSources() {
     for theme in $(find . -maxdepth 1 -type d | grep -v "^\.$")
     do
       echo Installing theme ${theme} from sources
-      DEST="/var/www/html/wp-content/themes/${theme}"
+      DEST="${WP_BASE}/wp-content/themes/${theme}"
       if [ -h "${DEST}" ]; then
         echo "WARNING : plugin theme for ${theme} already exists, ignoring"
       else
         if [ "${DEPLOY_MODE}" == "dev" ]; then
-            ln -s ${THEME_DIRECTORY}/${theme} /var/www/html/wp-content/themes
+            ln -s ${THEME_DIRECTORY}/${theme} ${WP_BASE}/wp-content/themes
         else
-          sudo -u www-data cp -rf ${THEME_DIRECTORY}/${theme} /var/www/html/wp-content/themes
+          sudo -u www-data cp -rf ${THEME_DIRECTORY}/${theme} ${WP_BASE}/wp-content/themes
         fi
       fi
     done
@@ -174,6 +182,14 @@ ${WP_CMD} core is-installed
 RET=$?
 set -e
 if [ ${RET} -ne 0 ]; then
+  if [ "${WP_BASE}" != "/var/www/html" ]; then
+    chown www-data:www-data ${WP_BASE}
+    echo "Moving Wordpress from '/var/www/html to '${WP_BASE}'...'"
+    set +e
+    mv /var/www/html/* ${WP_BASE}
+    set -e
+  fi
+
   echo Initializing ....
   ${WP_CMD} core config --dbname=${WORDPRESS_DB_NAME} --dbuser=${WORDPRESS_DB_USER} --dbpass=${WORDPRESS_DB_PASSWORD} --dbhost=db
   ${WP_CMD} core install --url=${WORDPRESS_DOMAIN_NAME} --title="Change my title!!" --admin_user=${WORDPRESS_ADMIN_USER} --admin_password=${WORDPRESS_ADMIN_PASSWORD} --admin_email=admin@test.com --skip-email
