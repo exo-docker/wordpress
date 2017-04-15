@@ -1,15 +1,16 @@
 #!/bin/bash -eu
 
+WP_BASE=$(pwd)
+
 echo #####################
-echo "Using : $(pwd) as wordpress base directory"
+echo "Using : ${WP_BASE} as wordpress base directory"
 echo #####################
 
-WP_BASE=$(pwd)
 WP_CMD="sudo -u www-data wp --path=${WP_BASE}"
 
 SRC_DIRECTORY=/src
 WP_CONTENT_DIRECTORY=${SRC_DIRECTORY}/wp-content
-STATIC_DIRECTORY=/static
+# STATIC_DIRECTORY=/static
 
 PLUGIN_DIRECTORY=${WP_CONTENT_DIRECTORY}/plugins
 PLUGIN_LIST=${SRC_DIRECTORY}/plugins.lst
@@ -19,6 +20,36 @@ THEME_LIST=${SRC_DIRECTORY}/themes.lst
 set +u
 DEPLOY_MODE=${DEPLOY_MODE:dev}
 set -u
+
+function moveDirectory {
+  local source=$1
+  local dest=$2
+
+  if [ ! -e $source ]; then
+    echo ${source} does not exist
+    exit 1
+  fi
+
+  if [ ! -e $dest ]; then
+    echo ${dest} does not exist
+    exit 1
+  fi
+
+  for f in $source/*; do
+    name=$(basename $f $source)
+    if [ -d $name ]; then
+      if [ -d ${dest}/$name ]; then
+        moveDirectory $f $dest/$name
+        rm -rf $f
+      else
+        mv $f $dest
+      fi
+    else
+      mv $f $dest
+    fi
+
+  done
+}
 
 function installRemotePlugins() {
   if [ -e "${PLUGIN_LIST}" ]; then
@@ -183,10 +214,10 @@ RET=$?
 set -e
 if [ ${RET} -ne 0 ]; then
   if [ "${WP_BASE}" != "/var/www/html" ]; then
-    chown www-data:www-data ${WP_BASE}
+    chown -R www-data:www-data ${WP_BASE}
     echo "Moving Wordpress from '/var/www/html to '${WP_BASE}'...'"
     set +e
-    mv /var/www/html/* ${WP_BASE}
+    moveDirectory /var/www/html ${WP_BASE}
     set -e
   fi
 

@@ -14,8 +14,7 @@ ENTRYPOINT /entrypoint.sh
 
 ARG WORDPRESS_VERSION=4.6.1
 
-RUN chown www-data:www-data /var/www/html && sudo -u www-data wp core download --version=${WORDPRESS_VERSION} 
+RUN chown www-data:www-data /var/www/html && sudo -u www-data wp core download --version=${WORDPRESS_VERSION}
 
 COPY entrypoint.sh /
 RUN chmod a+x /entrypoint.sh
-
