@@ -3,6 +3,11 @@
 Allow to install a predefined version of wordpress at build time
 and configure it at runtime.
 
+## Content
+The image contains the following components pre-installed :
+* [wp-cli](http://wp-cli.org/)
+
+
 ## Usage
 
 ```
@@ -41,4 +46,3 @@ WORDPRESS_PUBLIC_URL     | Public url to use Example : http://localhost
 WORDPRESS_DOMAIN_NAME    | Wordpress domain Example : localhost
 WORDPRESS_ADMIN_USER     | Admin user to initialize Example : admin
 WORDPRESS_ADMIN_PASSWORD | Admin user password to initialize Example : adminpassword
-
