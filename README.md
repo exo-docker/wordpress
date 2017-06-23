@@ -19,6 +19,7 @@ The container will look for the following elements based on the ``/src`` directo
 * themes/* : sources of the themes to install
 * plugins.lst : list of official plugins to install
 * themes.lst : list of official themes to install
+* languages.lst : list of languages to install.
 
 ## plugins.lst and themes.lst files format
 
@@ -34,6 +35,18 @@ contact-form-7:4.5.1
 polylang:2.0.7
 myplugin:https://my.public.url/myplugin.zip
 ```
+
+## Languages
+
+Each line of the ```languages.lst``` file must match a [Wordpress local](https://make.wordpress.org/polyglots/teams/).
+If the file is not present, no additional languages will be installed.
+
+Example :
+```
+en_GB
+fr_FR
+```
+
 ## Environment variables
 
 | Variable Name          | Description

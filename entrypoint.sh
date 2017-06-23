@@ -16,6 +16,7 @@ PLUGIN_DIRECTORY=${WP_CONTENT_DIRECTORY}/plugins
 PLUGIN_LIST=${SRC_DIRECTORY}/plugins.lst
 THEME_DIRECTORY=${WP_CONTENT_DIRECTORY}/themes
 THEME_LIST=${SRC_DIRECTORY}/themes.lst
+LANGUAGE_LIST=${SRC_DIRECTORY}/languages.lst
 
 set +u
 DEPLOY_MODE=${DEPLOY_MODE:dev}
@@ -49,6 +50,21 @@ function moveDirectory {
     fi
 
   done
+}
+
+function installLanguages() {
+  echo "Languages installation..."
+  if [ -e "${LANGUAGE_LIST}" ]; then
+    while read language; do
+      ${WP_CMD} core language install ${language}
+    done < ${LANGUAGE_LIST}
+  else
+    echo ""
+    echo "[INFO] No language to install found (${LANGUAGE_LIST} file not present})"
+    echo ""
+  fi
+  echo "Languages installation done..."
+  echo
 }
 
 function installRemotePlugins() {
@@ -234,6 +250,7 @@ if [ ${RET} -ne 0 ]; then
   $WP_CMD user update ${WORDPRESS_ADMIN_USER} --user_pass=${WORDPRESS_ADMIN_PASSWORD} 2>/dev/null
   set -e
 
+  installLanguages
   installPluginsFromSources
   installRemotePlugins
   installThemesFromSources
