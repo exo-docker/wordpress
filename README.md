@@ -19,7 +19,7 @@ The container will look for the following elements based on the ``/src`` directo
 * themes/* : sources of the themes to install
 * plugins.lst : list of official plugins to install
 * themes.lst : list of official themes to install
-* languages.lst : list of languages to install.
+* languages.lst : list of languages to install. (since 1.1.10)
 
 ## plugins.lst and themes.lst files format
 
