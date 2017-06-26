@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick
 
 ENTRYPOINT /entrypoint.sh
 
-ARG WORDPRESS_VERSION=4.6.1
+ARG WORDPRESS_VERSION=4.8
 
 RUN chown www-data:www-data /var/www/html && sudo -u www-data wp core download --version=${WORDPRESS_VERSION}
 
