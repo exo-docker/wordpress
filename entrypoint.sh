@@ -237,18 +237,30 @@ if [ ${RET} -ne 0 ]; then
     set -e
   fi
 
+  # Sanitize site url
+  NEW_URL=$(echo ${WORDPRESS_PUBLIC_URL} | tr -d '"')
+
   echo Initializing ....
   ${WP_CMD} core config --dbname=${WORDPRESS_DB_NAME} --dbuser=${WORDPRESS_DB_USER} --dbpass=${WORDPRESS_DB_PASSWORD} --dbhost=db
   ${WP_CMD} core install --url=${WORDPRESS_DOMAIN_NAME} --title="Change my title!!" --admin_user=${WORDPRESS_ADMIN_USER} --admin_password=${WORDPRESS_ADMIN_PASSWORD} --admin_email=admin@test.com --skip-email
 
   ${WP_CMD} core update-db
-  setOption siteurl "${WORDPRESS_PUBLIC_URL}"
-  setOption home "${WORDPRESS_PUBLIC_URL}"
+  setOption siteurl "${NEW_URL}"
+  setOption home "${NEW_URL}"
   echo Update admin password
   set +e
   ## email is failing
   $WP_CMD user update ${WORDPRESS_ADMIN_USER} --user_pass=${WORDPRESS_ADMIN_PASSWORD} 2>/dev/null
   set -e
+
+  echo Updating base url... updated
+  OLD_URL=$(${WP_CMD} option get siteurl)
+  if [ "${NEW_URL}" != "${OLD_URL}" ]; then
+    echo Migrate from ${OLD_URL} to ${NEW_URL}
+    ${WP_CMD} search-replace ${OLD_URL} ${NEW_URL}
+  else
+    echo "No url updates needed, keeping ${OLD_URL}"
+  fi
 
   installLanguages
   installPluginsFromSources
