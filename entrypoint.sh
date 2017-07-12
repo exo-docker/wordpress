@@ -237,6 +237,7 @@ if [ ${RET} -ne 0 ]; then
     set -e
   fi
 
+  OLD_URL=$(${WP_CMD} option get siteurl)
   # Sanitize site url
   NEW_URL=$(echo ${WORDPRESS_PUBLIC_URL} | tr -d '"')
 
@@ -254,7 +255,6 @@ if [ ${RET} -ne 0 ]; then
   set -e
 
   echo Updating base url... updated
-  OLD_URL=$(${WP_CMD} option get siteurl)
   if [ "${NEW_URL}" != "${OLD_URL}" ]; then
     echo Migrate from ${OLD_URL} to ${NEW_URL}
     ${WP_CMD} search-replace ${OLD_URL} ${NEW_URL}
