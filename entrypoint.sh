@@ -237,15 +237,16 @@ if [ ${RET} -ne 0 ]; then
     set -e
   fi
 
-  OLD_URL=$(${WP_CMD} option get siteurl)
-  # Sanitize site url
-  NEW_URL=$(echo ${WORDPRESS_PUBLIC_URL} | tr -d '"')
-
   echo Initializing ....
   ${WP_CMD} core config --dbname=${WORDPRESS_DB_NAME} --dbuser=${WORDPRESS_DB_USER} --dbpass=${WORDPRESS_DB_PASSWORD} --dbhost=db
   ${WP_CMD} core install --url=${WORDPRESS_DOMAIN_NAME} --title="Change my title!!" --admin_user=${WORDPRESS_ADMIN_USER} --admin_password=${WORDPRESS_ADMIN_PASSWORD} --admin_email=admin@test.com --skip-email
 
   ${WP_CMD} core update-db
+
+  OLD_URL=$(${WP_CMD} option get siteurl)
+  # Sanitize site url
+  NEW_URL=$(echo ${WORDPRESS_PUBLIC_URL} | tr -d '"')
+
   setOption siteurl "${NEW_URL}"
   setOption home "${NEW_URL}"
   echo Update admin password
