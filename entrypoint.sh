@@ -222,6 +222,34 @@ function setOption() {
   fi
 }
 
+function configureStatusPage() {
+  echo INFO FPM status page enabled : ${FPM_STATUS_ENABLED}
+  if ${FPM_STATUS_ENABLED}; then
+    cp /usr/local/etc/php-fpm.d/www.conf /tmp/www.conf
+    sed -i 's/^;pm.status_path/pm.status_path/g' /usr/local/etc/php-fpm.d/www.conf
+  fi
+}
+
+function configurePingPage() {
+  echo INFO FPM ping page enabled : ${FPM_PING_ENABLED}
+  if ${FPM_PING_ENABLED}; then
+    cp /usr/local/etc/php-fpm.d/www.conf /tmp/www.conf
+    sed -i 's/^;ping.path/ping.path/g' /usr/local/etc/php-fpm.d/www.conf
+    sed -i 's/^;ping.response/ping.response/g' /usr/local/etc/php-fpm.d/www.conf
+  fi
+}
+
+function printFPMConfChanges() {
+  set +e
+  diff -U3 /usr/local/etc/php-fpm.d/www.conf.default /usr/local/etc/php-fpm.d/www.conf
+  set -e
+}
+
+# FPM configuration
+configureStatusPage
+configurePingPage
+printFPMConfChanges
+
 waitForDatabase
 
 set +e

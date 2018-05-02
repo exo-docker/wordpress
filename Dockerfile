@@ -4,6 +4,9 @@ FROM php:7.0.14-fpm
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
+ENV FPM_STATUS_ENABLED=true
+ENV FPM_PING_ENABLED=true
+
 # Install wp command line
 RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick libmagickwand-dev && rm -rf /var/lib/apt/ && \
   cd /tmp && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
