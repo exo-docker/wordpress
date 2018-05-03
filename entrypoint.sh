@@ -239,6 +239,24 @@ function configurePingPage() {
   fi
 }
 
+function configureProcessManager() {
+  echo INFO FPM process manager configuration
+  # Comment default configuration
+  sed -i 's/^pm /;pm /g' /usr/local/etc/php-fpm.d/www.conf
+  sed -i 's/^pm.max_children /;pm.max_children /g' /usr/local/etc/php-fpm.d/www.conf
+  sed -i 's/^pm.start_servers /;pm.start_servers /g' /usr/local/etc/php-fpm.d/www.conf
+  sed -i 's/^pm.min_spare_servers /;pm.min_spare_servers /g' /usr/local/etc/php-fpm.d/www.conf
+  sed -i 's/^pm.max_spare_servers /;pm.max_spare_servers /g' /usr/local/etc/php-fpm.d/www.conf
+  echo "[www] 
+pm = ${FPM_PROCESS_MANAGER}
+pm.max_children = ${FPM_MAX_CHILDREN}
+pm.start_servers = ${FPM_START_CHILDREN}
+pm.min_spare_servers = ${FPM_MIN_SPARE_SERVERS}
+pm.max_spare_servers = ${FPM_MAX_SPARE_SERVERS}
+" > /usr/local/etc/php-fpm.d/process_manager.conf
+  cat /usr/local/etc/php-fpm.d/process_manager.conf
+}
+
 function printFPMConfChanges() {
   set +e
   diff -U3 /usr/local/etc/php-fpm.d/www.conf.default /usr/local/etc/php-fpm.d/www.conf
@@ -246,6 +264,7 @@ function printFPMConfChanges() {
 }
 
 # FPM configuration
+configureProcessManager
 configureStatusPage
 configurePingPage
 printFPMConfChanges

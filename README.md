@@ -61,3 +61,8 @@ WORDPRESS_ADMIN_USER     | Admin user to initialize Example : admin
 WORDPRESS_ADMIN_PASSWORD | Admin user password to initialize Example : adminpassword
 FPM_STATUS_ENABLED       | should /status page should be enabled or not (default: true)
 FPM_PING_ENABLED         | Should the fpm /ping page should be enabled (default: true)
+FPM_PROCESS_MANAGER      | Type of process manager SUpported : dynamic or ondemand default:dynamic
+FPM_START_CHILDREN       | Number of children created on startup default=2
+FPM_MAX_CHILDREN         | Max number of child process default=5
+FPM_MIN_SPARE_SERVERS    | Minimal number of idle processes default=1
+FPM_MIN_SPARE_SERVERS    | Maximal number of idel processes default=3

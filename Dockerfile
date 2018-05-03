@@ -6,6 +6,11 @@ MAINTAINER eXo Platform <docker@exoplatform.com>
 
 ENV FPM_STATUS_ENABLED=true
 ENV FPM_PING_ENABLED=true
+ENV FPM_PROCESS_MANAGER=dynamic
+ENV FPM_MAX_CHILDREN=5
+ENV FPM_START_CHILDREN=2
+ENV FPM_MIN_SPARE_SERVERS=1
+ENV FPM_MAX_SPARE_SERVERS=3
 
 # Install wp command line
 RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick libmagickwand-dev && rm -rf /var/lib/apt/ && \
