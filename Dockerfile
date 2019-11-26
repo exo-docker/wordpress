@@ -1,4 +1,4 @@
-FROM php:7.2.25-fpm-stretch
+FROM php:7.2.26-fpm-stretch
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
