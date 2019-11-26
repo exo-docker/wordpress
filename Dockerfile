@@ -1,6 +1,4 @@
-# Use apache for the moment. migrate to fpm later
-#FROM wordpress:4.6.1-php7.0-apache
-FROM php:7.2.7-fpm-stretch
+FROM php:7.2.25-fpm-stretch
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
@@ -24,7 +22,7 @@ RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick
 
 ENTRYPOINT /entrypoint.sh
 
-ARG WORDPRESS_VERSION=4.9.7
+ARG WORDPRESS_VERSION=4.9.12
 
 RUN chown www-data:www-data /var/www/html
 USER www-data
