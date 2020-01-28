@@ -1,4 +1,4 @@
-FROM php:7.2.25-fpm-stretch
+FROM php:7.3.14-fpm-stretch
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
@@ -10,7 +10,7 @@ ENV FPM_START_CHILDREN=2
 ENV FPM_MIN_SPARE_SERVERS=1
 ENV FPM_MAX_SPARE_SERVERS=3
 
-ARG WP_CLI_VERSION=1.5.1
+ARG WP_CLI_VERSION=2.4.0
 
 # Install wp command line
 RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick libmagickwand-dev && rm -rf /var/lib/apt/ && \
@@ -22,9 +22,9 @@ RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick
 
 ENTRYPOINT /entrypoint.sh
 
-ARG WORDPRESS_VERSION=4.9.12
+ARG WORDPRESS_VERSION=5.3.2
 
-RUN chown www-data:www-data /var/www/html
+RUN chown www-data:www-data /var/www/
 USER www-data
 RUN wp core download --version=${WORDPRESS_VERSION}
 USER root
