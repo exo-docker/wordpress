@@ -1,4 +1,4 @@
-FROM php:7.3.14-fpm-stretch
+FROM php:7.3.28-fpm-stretch
 
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
@@ -10,7 +10,7 @@ ENV FPM_START_CHILDREN=2
 ENV FPM_MIN_SPARE_SERVERS=1
 ENV FPM_MAX_SPARE_SERVERS=3
 
-ARG WP_CLI_VERSION=2.4.0
+ARG WP_CLI_VERSION=2.5.0
 
 # Install wp command line
 RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick libmagickwand-dev && rm -rf /var/lib/apt/ && \
