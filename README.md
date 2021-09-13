@@ -59,6 +59,7 @@ WORDPRESS_PUBLIC_URL     | Public url to use Example : http://localhost
 WORDPRESS_DOMAIN_NAME    | Wordpress domain Example : localhost
 WORDPRESS_ADMIN_USER     | Admin user to initialize Example : admin
 WORDPRESS_ADMIN_PASSWORD | Admin user password to initialize Example : adminpassword
+WORDPRESS_DISABLE_CRON   | Disable default wordpress cron jobs : (default: false)
 FPM_STATUS_ENABLED       | should /status page should be enabled or not (default: true)
 FPM_PING_ENABLED         | Should the fpm /ping page should be enabled (default: true)
 FPM_PROCESS_MANAGER      | Type of process manager SUpported : dynamic or ondemand default:dynamic
