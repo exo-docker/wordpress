@@ -183,6 +183,17 @@ function installThemesFromSources() {
   fi
 }
 
+function manageWPCron() {
+  echo 'control WP cron status' 
+  [ ! -z "$WORDPRESS_DISABLE_CRON" ] && {
+    if [ $WORDPRESS_DISABLE_CRON == true ]; then
+        $WP_CMD config set DISABLE_WP_CRON true;
+        echo 'WP cron disabled'
+    fi
+  }
+
+}
+
 function waitForDatabase() {
   local count=0
   local ret=1
@@ -285,6 +296,7 @@ if [ ${RET} -ne 0 ]; then
   fi
 
   echo Initializing ....
+  manageWPCron
   ${WP_CMD} core config --dbname=${WORDPRESS_DB_NAME} --dbuser=${WORDPRESS_DB_USER} --dbpass=${WORDPRESS_DB_PASSWORD} --dbhost=db
   ${WP_CMD} core install --url=${WORDPRESS_DOMAIN_NAME} --title="Change my title!!" --admin_user=${WORDPRESS_ADMIN_USER} --admin_password=${WORDPRESS_ADMIN_PASSWORD} --admin_email=admin@test.com --skip-email
 
