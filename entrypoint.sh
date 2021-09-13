@@ -185,7 +185,7 @@ function installThemesFromSources() {
 
 function manageWPCron() {
   echo 'control WP cron status' 
-  [ ! -z "$WORDPRESS_DISABLE_CRON" ] && {
+  [ ! -z "${WORDPRESS_DISABLE_CRON:-}" ] && {
     if [ $WORDPRESS_DISABLE_CRON == true ]; then
         $WP_CMD config set DISABLE_WP_CRON true;
         echo 'WP cron disabled'
