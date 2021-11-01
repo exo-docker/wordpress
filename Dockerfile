@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y less wget mysql-client sudo imagemagick
 
 ENTRYPOINT /entrypoint.sh
 
-ARG WORDPRESS_VERSION=5.7.2
+ARG WORDPRESS_VERSION=5.8.1
 
 RUN chown www-data:www-data /var/www/
 USER www-data
