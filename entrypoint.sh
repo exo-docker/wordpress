@@ -197,7 +197,7 @@ function manageWPCron() {
 function waitForDatabase() {
   local count=0
   local ret=1
-  local max_try=30
+  local max_try=60
 
   echo Waiting for database availability
 
