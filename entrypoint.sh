@@ -194,6 +194,15 @@ function manageWPCron() {
 
 }
 
+function manageWPMemLimit() {
+  echo 'control Wordpress Mem limit' 
+  [ ! -z "${WORDPRESS_MEMORY_LIMIT:-}" ] && {
+    $WP_CMD config set WP_MEMORY_LIMIT ${WORDPRESS_MEMORY_LIMIT};
+    echo "WP Mem limit set to ${WORDPRESS_MEMORY_LIMIT}"    
+  }
+
+}
+
 function waitForDatabase() {
   local count=0
   local ret=1
@@ -301,6 +310,7 @@ if [ ${RET} -ne 0 ]; then
 
   ${WP_CMD} core update-db
   manageWPCron
+  manageWPMemLimit
 
   OLD_URL=$(${WP_CMD} option get siteurl)
   # Sanitize site url
